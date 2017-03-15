@@ -10,7 +10,10 @@ The REST API is defined using Swagger and can be viewed at /api/ui endpoint.
 
 Used Cuckoo Filter to check if the name is already present in the system. Cuckoo Filter is a highly space-efficient probabilistic data structure, that is used to check for set membership. It takes about 7 bits per entry with 0% False Negative rate and about 3% False positive rate i.e a query returns either "possibly in set" or "definitely not in set". It can thought of as a tiny, high speed cache which can be used to reduce database reads and thereby increase performance. [More Info](https://bdupras.github.io/filter-tutorial/).
 
-Did not use a database as data persistence was not a key point.
+* Did not use a database as data persistence was not a key point.
+* All three extra credit options have been completed.
+* Asset details can be updated using PATCH request
+* If the name is set to **_random** while creating an asset, a valid pseudorandom string is generated and used as name.
 
 
 To run the server, please execute the following from the project root directory:
