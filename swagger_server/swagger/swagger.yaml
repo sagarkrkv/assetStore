@@ -1,0 +1,198 @@
+---
+swagger: "2.0"
+info:
+  description: "Asset store API created using the swagger-2.0 specification"
+  version: "1.0.0"
+  title: "Asset Store"
+  license:
+    name: "MIT"
+    url: "http://opensource.org/licenses/MIT"
+host: "localhost:8080"
+basePath: "/api"
+schemes:
+- "http"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+paths:
+  /assets:
+    get:
+      description: "Returns all assets from the system"
+      operationId: "find_assets"
+      produces:
+      - "application/json"
+      - "application/xml"
+      - "text/xml"
+      - "text/html"
+      parameters:
+      - name: "tags"
+        in: "query"
+        description: "tags to filter by, asset_type and/or asset_code"
+        required: false
+        type: "string"
+        collectionFormat: "csv"
+      responses:
+        200:
+          description: "list of assets"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/asset"
+        default:
+          description: "unexpected error"
+          schema:
+            $ref: "#/definitions/errorModel"
+      x-swagger-router-controller: "swagger_server.controllers.default_controller"
+    post:
+      description: "Creates a new asset.  Duplicates are not allowed"
+      operationId: "add_asset"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "asset"
+        description: "Asset to add"
+        required: true
+        schema:
+          $ref: "#/definitions/asset"
+      - name: "X_User"
+        in: "header"
+        description: "User id to verify authorization"
+        required: true
+        type: "string"
+        default: "admin"
+        format: "string"
+      responses:
+        200:
+          description: "Asset response"
+          schema:
+            $ref: "#/definitions/asset"
+        default:
+          description: "unexpected error"
+          schema:
+            $ref: "#/definitions/errorModel"
+      x-swagger-router-controller: "swagger_server.controllers.default_controller"
+  /assets/{name}:
+    get:
+      description: "Returns an asset based on a its name"
+      operationId: "find_asset_by_name"
+      produces:
+      - "application/json"
+      - "application/xml"
+      - "text/xml"
+      - "text/html"
+      parameters:
+      - name: "name"
+        in: "path"
+        description: "name of asset to fetch"
+        required: true
+        type: "string"
+        format: "unique name of the asset"
+      responses:
+        200:
+          description: "Asset response"
+          schema:
+            $ref: "#/definitions/asset"
+        default:
+          description: "invalid request"
+          schema:
+            $ref: "#/definitions/errorModel"
+      x-swagger-router-controller: "swagger_server.controllers.default_controller"
+    patch:
+      description: "Updates the asset details by name."
+      operationId: "update_asset_by_name"
+      produces:
+      - "application/json"
+      - "application/xml"
+      - "text/xml"
+      - "text/html"
+      parameters:
+      - name: "name"
+        in: "path"
+        description: "name of asset to update"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "assetDetails"
+        description: "Asset to add"
+        required: true
+        schema:
+          type: "array"
+          items:
+            $ref: "#/definitions/assetDetails"
+          minItems: 1
+          maxItems: 2
+      - name: "X_User"
+        in: "header"
+        description: "User id to verify authorization"
+        required: true
+        type: "string"
+        default: "admin"
+        format: "string"
+      responses:
+        200:
+          description: "Asset response"
+          schema:
+            $ref: "#/definitions/asset"
+        409:
+          description: "invalid request"
+          schema:
+            $ref: "#/definitions/errorModel"
+      x-swagger-router-controller: "swagger_server.controllers.default_controller"
+definitions:
+  asset:
+    type: "object"
+    required:
+    - "class"
+    - "name"
+    - "type"
+    properties:
+      name:
+        type: "string"
+        example: "_random"
+        description: "Unique ASCII alphanumeric string 4-64 characters long may include\
+          \ - and _ in all positions except first. '_random' can used to generate set a \
+          random username "
+      type:
+        type: "string"
+        description: "Asset type Satellite or Antenna"
+        enum:
+        - "antenna"
+        - "satellite"
+      class:
+        type: "string"
+        example: "yagi"
+        description: "Asset class:  dove or rapideye if satellite; dish or yagi if\
+          \ antenna."
+      details:
+        type: "array"
+        items:
+          $ref: "#/definitions/assetDetails"
+        maxItems: 2
+        minItems: 0
+  assetDetails:
+    type: "object"
+    required:
+    - "type"
+    - "value"
+    properties:
+      type:
+        type: "string"
+        description: "Key of the asset detail"
+        example: "gain"
+      value:
+        type: "string"
+        description: "Value of the asset detail"
+        example: "3.2344531"
+  errorModel:
+    type: "object"
+    required:
+    - "code"
+    - "message"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      message:
+        type: "string"
