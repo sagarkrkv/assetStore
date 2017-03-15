@@ -29,6 +29,18 @@ sudo docker build -t assetStore .
 sudo docker run -p 8080:8080 assetStore
 ```
 
+
+Open this link in your browser to here:
+
+```
+http://localhost:8080/api/ui/
+```
+
+The Swagger definition is present at:
+
+```
+http://localhost:8080/api/swagger.json
+```
 To run tests
 
 ```
@@ -41,18 +53,4 @@ To launch the integration tests, use tox or check [travis-ci](https://travis-ci.
 ```
 sudo pip install tox
 tox
-```
-
-
-
-Open this link in your browser to here:
-
-```
-http://localhost:8080/api/ui/
-```
-
-The Swagger definition is present at:
-
-```
-http://localhost:8080/api/swagger.json
 ```
