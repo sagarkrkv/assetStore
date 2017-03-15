@@ -169,9 +169,9 @@ def isvalidDetail(asset, detail):
             asset.details[key] = value
             return True
     elif asset._class == "yagi":
-    ` if key == "gain" and isFloat(value):
-                asset.details[key] = float(value)
-                return True
+        if key == "gain" and isFloat(value):
+            asset.details[key] = float(value)
+            return True
     return False
 
 def genRandName():
